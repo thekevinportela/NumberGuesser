@@ -18,6 +18,7 @@ export default function App() {
   } else {
     return (
       <NavigationContainer>
+        <StatusBar style="light" />
         <Main />
       </NavigationContainer>
     );
