@@ -9,6 +9,8 @@ import {
   Alert,
   Image,
   Pressable,
+  KeyboardAvoidingView,
+  Keyboard,
 } from "react-native";
 import { useState } from "react";
 import PrimaryButton from "../../components/ui/PrimaryButton";
@@ -16,6 +18,7 @@ import { useNavigation } from "@react-navigation/native";
 // import { BilboSwashCaps_400Regular } from "@expo-google-fonts/bilbo-swash-caps";
 import LottieView from "lottie-react-native";
 import GameScreen from "../GameScreen";
+import { Entypo } from "@expo/vector-icons";
 import Animated, {
   Easing,
   useAnimatedStyle,
@@ -54,6 +57,8 @@ const StartGame = () => {
       return;
     } else {
       setChosenNumber(chosenNumber);
+      Keyboard.dismiss();
+      // setTimeout(() => Keyboard.dismiss(), 1000);
       translateY.value = withTiming(-height * 1.5, {
         duration: 950,
         easing: Easing.inOut(Easing.cubic),
@@ -72,7 +77,10 @@ const StartGame = () => {
     <Animated.View
       style={[styles.container, { height: height * 2.5 }, containerStyle]}
     >
-      <View style={{ flex: 1, justifyContent: "center" }}>
+      <Pressable
+        onPress={() => Keyboard.dismiss()}
+        style={{ flex: 1, justifyContent: "center" }}
+      >
         <View style={styles.animationContainer} pointerEvents={"none"}>
           <LottieView
             autoPlay
@@ -91,33 +99,35 @@ const StartGame = () => {
           />
         </View>
         {/* <Image style={styles.background} resizeMode="cover" source={background} /> */}
-        <Text
-          style={{
-            paddingBottom: 50,
-            textAlign: "center",
-            // color: "#9984E8",
-            color: "#F4E396",
-            fontWeight: "bold",
-            fontSize: 70,
-            fontFamily: "Megrim_400Regular",
-          }}
-        >
-          Number Guesser
-        </Text>
-        <TextInput
-          style={styles.textInput}
-          maxLength={2}
-          keyboardType={"number-pad"}
-          onChangeText={setNumber}
-          value={number}
-        />
-        <View style={{ paddingTop: 20 }}>
-          <PrimaryButton title="Reset" onPress={resetNumber} />
-        </View>
-        <View style={{ paddingTop: 20 }}>
-          <PrimaryButton title="Confirm" onPress={confirmInputHandler} />
-        </View>
-      </View>
+        <KeyboardAvoidingView behavior="position" keyboardVerticalOffset={20}>
+          <Text
+            style={{
+              paddingBottom: 50,
+              textAlign: "center",
+              // color: "#9984E8",
+              color: "#F4E396",
+              fontWeight: "bold",
+              fontSize: 70,
+              fontFamily: "Megrim_400Regular",
+            }}
+          >
+            Number Guesser
+          </Text>
+          <TextInput
+            style={styles.textInput}
+            maxLength={2}
+            keyboardType={"number-pad"}
+            onChangeText={setNumber}
+            value={number}
+          />
+          <View style={{ paddingTop: 20 }}>
+            <PrimaryButton title="Reset" onPress={resetNumber} />
+          </View>
+          <View style={{ paddingTop: 20 }}>
+            <PrimaryButton title="Confirm" onPress={confirmInputHandler} />
+          </View>
+        </KeyboardAvoidingView>
+      </Pressable>
       <View
         style={{
           flex: 0.5,
@@ -137,12 +147,22 @@ const StartGame = () => {
         </Text>
       </View>
       <View style={{ flex: 1 }}>
-        <Pressable
-          style={{ position: "absolute", top: 50, zIndex: 100 }}
+        {/* <Pressable
+          style={{
+            position: "absolute",
+            top: 50,
+            zIndex: 100,
+            alignItems: "center",
+          }}
           onPress={() => onPressBack()}
         >
-          <Text>BACK</Text>
-        </Pressable>
+          <Entypo
+            name="chevron-up"
+            size={60}
+            color="#1D2241"
+            style={{ paddingRight: 10 }}
+          />
+        </Pressable> */}
         <GameScreen chosenNumber={chosenNumber} onPress={onPressBack} />
       </View>
     </Animated.View>

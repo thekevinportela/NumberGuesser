@@ -2,6 +2,8 @@ import {
   Alert,
   Image,
   ImageBackground,
+  Keyboard,
+  Pressable,
   SafeAreaView,
   StyleSheet,
   Text,
@@ -71,12 +73,18 @@ const GameScreen = ({ route, chosenNumber, onPress }: any) => {
   };
 
   return (
-    <View style={styles.container}>
+    <Pressable onPress={() => Keyboard.dismiss()} style={styles.container}>
       <LinearGradient
         // colors={["#13254E", "#FB369E"]}
         colors={["#1D2241", "#FB369E"]}
         style={styles.background}
       />
+      <Pressable
+        onPress={playAgainPress}
+        style={{ position: "absolute", top: 50 }}
+      >
+        <Entypo name="chevron-up" size={50} color="#F4E396" />
+      </Pressable>
       <Text
         style={{
           paddingBottom: 80,
@@ -191,7 +199,7 @@ const GameScreen = ({ route, chosenNumber, onPress }: any) => {
           )}
         </View>
       </LinearGradient>
-    </View>
+    </Pressable>
   );
 };
 export default GameScreen;
