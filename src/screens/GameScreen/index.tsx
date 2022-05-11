@@ -29,8 +29,8 @@ const getRandomGuess = (min: number, max: number) => {
 let minBoundary = 1;
 let maxBoundary = 99;
 
-const GameScreen = ({ route }: any) => {
-  const { chosenNumber } = route.params;
+const GameScreen = ({ route, chosenNumber, onPress }: any) => {
+  // const { chosenNumber } = route.params;
   const navigation = useNavigation();
 
   const initialGuess = getRandomGuess(minBoundary, maxBoundary);
@@ -184,7 +184,10 @@ const GameScreen = ({ route }: any) => {
               >
                 GAME OVER
               </Text>
-              <PrimaryButton title="Play Again" onPress={playAgainPress} />
+              <PrimaryButton
+                title="Play Again"
+                onPress={[onPress, setGameOver(false)]}
+              />
             </>
           )}
         </View>

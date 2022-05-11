@@ -8,21 +8,41 @@ import {
   useWindowDimensions,
   Alert,
   Image,
+  Pressable,
 } from "react-native";
 import { useState } from "react";
 import PrimaryButton from "../../components/ui/PrimaryButton";
 import { useNavigation } from "@react-navigation/native";
 // import { BilboSwashCaps_400Regular } from "@expo-google-fonts/bilbo-swash-caps";
 import LottieView from "lottie-react-native";
+import GameScreen from "../GameScreen";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+  withTiming,
+} from "react-native-reanimated";
 
 const background = require("../../assets/images/dice.jpg");
 
 const StartGame = () => {
   const navigation = useNavigation();
+  const { height } = useWindowDimensions();
   const [number, setNumber] = useState("");
   const resetNumber = () => {
     setNumber("");
   };
+  const [chosenNumber, setChosenNumber] = useState(0);
+
+  const translateY = useSharedValue(0);
+
+  const containerStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: translateY.value }],
+    };
+  });
+
   const confirmInputHandler = () => {
     const chosenNumber = parseInt(number);
     if (isNaN(chosenNumber) || chosenNumber < 0 || chosenNumber > 99) {
@@ -33,56 +53,99 @@ const StartGame = () => {
       );
       return;
     } else {
-      navigation.navigate("GameScreen", { chosenNumber });
+      setChosenNumber(chosenNumber);
+      translateY.value = withTiming(-height * 1.5, {
+        duration: 950,
+        easing: Easing.inOut(Easing.cubic),
+      });
+      //navigation.navigate("GameScreen", { chosenNumber });
     }
   };
+  const onPressBack = () => {
+    setNumber("");
+    translateY.value = withTiming(0, {
+      duration: 950,
+      easing: Easing.inOut(Easing.ease),
+    });
+  };
   return (
-    <View style={styles.container}>
-      <View style={styles.animationContainer} pointerEvents={"none"}>
-        <LottieView
-          autoPlay
-          // resizeMode="contain"
+    <Animated.View
+      style={[styles.container, { height: height * 2.5 }, containerStyle]}
+    >
+      <View style={{ flex: 1, justifyContent: "center" }}>
+        <View style={styles.animationContainer} pointerEvents={"none"}>
+          <LottieView
+            autoPlay
+            // resizeMode="contain"
+            style={{
+              //   width: 1000,
+              //   height: 1000,
+              //   backgroundColor: "#eeeeee",
+              // position: "absolute",
+              // top: 0,
+              // left: 0,
+              backgroundColor: "transparent",
+              // opacity: 0.5,
+            }}
+            source={require("../../assets/lotties/nightSky.json")}
+          />
+        </View>
+        {/* <Image style={styles.background} resizeMode="cover" source={background} /> */}
+        <Text
           style={{
-            //   width: 1000,
-            //   height: 1000,
-            //   backgroundColor: "#eeeeee",
-            // position: "absolute",
-            // top: 0,
-            // left: 0,
-            backgroundColor: "transparent",
-            // opacity: 0.5,
+            paddingBottom: 50,
+            textAlign: "center",
+            // color: "#9984E8",
+            color: "#F4E396",
+            fontWeight: "bold",
+            fontSize: 70,
+            fontFamily: "Megrim_400Regular",
           }}
-          source={require("../../assets/lotties/nightSky.json")}
+        >
+          Number Guesser
+        </Text>
+        <TextInput
+          style={styles.textInput}
+          maxLength={2}
+          keyboardType={"number-pad"}
+          onChangeText={setNumber}
+          value={number}
         />
+        <View style={{ paddingTop: 20 }}>
+          <PrimaryButton title="Reset" onPress={resetNumber} />
+        </View>
+        <View style={{ paddingTop: 20 }}>
+          <PrimaryButton title="Confirm" onPress={confirmInputHandler} />
+        </View>
       </View>
-      <Image style={styles.background} resizeMode="cover" source={background} />
-      <Text
+      <View
         style={{
-          paddingBottom: 50,
-          textAlign: "center",
-          // color: "#9984E8",
-          color: "#F4E396",
-          fontWeight: "bold",
-          fontSize: 70,
-          fontFamily: "Megrim_400Regular",
+          flex: 0.5,
+          backgroundColor: "#1D2241",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
-        Number Guesser
-      </Text>
-      <TextInput
-        style={styles.textInput}
-        maxLength={2}
-        keyboardType={"number-pad"}
-        onChangeText={setNumber}
-        value={number}
-      />
-      <View style={{ paddingTop: 20 }}>
-        <PrimaryButton title="Reset" onPress={resetNumber} />
+        <Text
+          style={{
+            fontSize: 43,
+            color: "#F4E396",
+            fontFamily: "Megrim_400Regular",
+          }}
+        >
+          LETS GO!
+        </Text>
       </View>
-      <View style={{ paddingTop: 20 }}>
-        <PrimaryButton title="Confirm" onPress={confirmInputHandler} />
+      <View style={{ flex: 1 }}>
+        <Pressable
+          style={{ position: "absolute", top: 50, zIndex: 100 }}
+          onPress={() => onPressBack()}
+        >
+          <Text>BACK</Text>
+        </Pressable>
+        <GameScreen chosenNumber={chosenNumber} onPress={onPressBack} />
       </View>
-    </View>
+    </Animated.View>
   );
 };
 
@@ -90,7 +153,7 @@ export default StartGame;
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    // flex: 1,
     justifyContent: "center",
   },
   animationContainer: {
