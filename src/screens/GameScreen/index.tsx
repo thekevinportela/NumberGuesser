@@ -28,7 +28,6 @@ const getRandomGuess = (min: number, max: number) => {
 
 let minBoundary = 1;
 let maxBoundary = 99;
-
 const GameScreen = ({ route, chosenNumber, onPress }: any) => {
   // const { chosenNumber } = route.params;
   const navigation = useNavigation();
@@ -42,7 +41,7 @@ const GameScreen = ({ route, chosenNumber, onPress }: any) => {
       minBoundary = 1;
       maxBoundary = 99;
     }
-  }, [currentGuess]);
+  }, [currentGuess, chosenNumber]);
 
   const nextGuessHandler = (direction: string) => {
     if (
@@ -66,8 +65,11 @@ const GameScreen = ({ route, chosenNumber, onPress }: any) => {
   };
   console.log("currentGuess", currentGuess);
   const playAgainPress = () => {
-    navigation.navigate("StartGame");
+    setTimeout(() => setCurrentGuess(initialGuess), 1000);
+    setGameOver(false);
+    onPress();
   };
+
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -184,10 +186,7 @@ const GameScreen = ({ route, chosenNumber, onPress }: any) => {
               >
                 GAME OVER
               </Text>
-              <PrimaryButton
-                title="Play Again"
-                onPress={[onPress, setGameOver(false)]}
-              />
+              <PrimaryButton title="Play Again" onPress={playAgainPress} />
             </>
           )}
         </View>
