@@ -50,7 +50,7 @@ const GameScreen = ({ route, chosenNumber, onPress }: any) => {
       (direction === "lower" && currentGuess < chosenNumber) ||
       (direction === "higher" && currentGuess > chosenNumber)
     ) {
-      Alert.alert("BITCH!", "Stop Lying.");
+      Alert.alert("HEY!", "Stop Lying.");
       return;
     }
 
